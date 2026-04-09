@@ -1,28 +1,23 @@
 <!--
   Sync Impact Report
   ===================================================================
-  Version change: 1.0.0 → 1.1.0 (MINOR — new principle added)
+  Version change: 1.1.0 → 2.0.0 (MAJOR — billing rates changed)
   Modified principles:
-    - None renamed or removed
+    - Principle I — Standardized Billing Rates: BE RM 300→360,
+      FE RM 250→300, PM/QA unchanged at RM 200
   Added sections:
-    - Principle VIII — Reverse Estimation (Budget-to-Scope)
-    - Cost Parameters: Reverse Estimation Formulas subsection
-    - Output Standards: Reverse Estimation Workflow subsection
-    - Output Standards: Reverse Quotation Output Format (Sections
-      A–E) subsection
+    - Principle IX — Mandatory Base Modules
+    - Principle X — Portal-Based Pricing
   Removed sections: None
   Templates requiring updates:
     - .specify/templates/plan-template.md — ✅ no update needed
-      (Constitution Check section is dynamic; gates derived at
-      plan-time from this file)
+      (Constitution Check section is dynamic)
     - .specify/templates/spec-template.md — ✅ no update needed
-      (user stories and requirements remain generic)
     - .specify/templates/tasks-template.md — ✅ no update needed
-      (task phases remain generic; estimation principles apply at
-      runtime)
-    - pricing_skill/SKILL.md — ✅ updated
-      (Forward + reverse estimation procedures added)
-    - pricing_skill/references/modEst_constitution.md — ✅ synced
+    - .github/skills/module_est_by_price/SKILL.md — ✅ updated
+      (rates, mandatory modules, portal rules synced)
+    - .github/skills/module_est_by_price/references/
+      modEst_constitution.md — ✅ synced
   Follow-up TODOs: None
   ===================================================================
 -->
@@ -35,8 +30,8 @@
 
 All quotations MUST use the following daily billing rates:
 
-- **Backend Developer (BE):** RM 300 / day
-- **Frontend Developer (FE):** RM 250 / day
+- **Backend Developer (BE):** RM 360 / day
+- **Frontend Developer (FE):** RM 300 / day
 - **Project Manager / QA (PM/QA):** RM 200 / day
 
 Rates MUST NOT be altered per-quote. Any rate revision MUST follow
@@ -75,7 +70,8 @@ Every quotation MUST include **all four** sections in the
 following order:
 
 1. **A. Executive Summary** — duration, total price,
-   infrastructure exclusions.
+   infrastructure exclusions, portal configuration
+   (single/dual).
 2. **B. Module Breakdown** — table with Module Name, Complexity,
    BE Days, FE Days, PM/QA Days, Subtotal Cost.
 3. **C. Resource Capacity Note** — internal planning reminder
@@ -154,7 +150,81 @@ addition to) a project description, the estimator MUST work
    PM/QA overhead (Principle II), complexity multipliers
    (Principle III), output format (Principle IV with Section E
    appended), exclusions (Principle V), rounding (Principle VI),
-   and validity (Principle VII) MUST be followed identically.
+   validity (Principle VII), mandatory base modules
+   (Principle IX), and portal-based pricing (Principle X) MUST
+   be followed identically.
+
+### IX. Mandatory Base Modules (NON-NEGOTIABLE)
+
+Every new system quotation MUST include the following baseline
+modules regardless of whether the client explicitly requests them.
+These are foundational to any production system:
+
+1. **User & Role Management** — authentication, authorization,
+   user profile CRUD, role-based access control (RBAC), and
+   session management.
+   - Minimum complexity tier: **Medium (1.5×)**.
+   - Typical adjusted-day range: BE 4–5, FE 3–4, PM/QA 1–1.5.
+   - Expected cost range (1-portal): **RM 2,500 – RM 3,000**.
+   - If the generated cost falls below RM 2,500, the estimator
+     MUST re-examine the day estimates — the module is likely
+     under-scoped.
+
+2. **CRUD Content Management** — the core business entity
+   management for the system's primary domain objects (e.g.,
+   inventory items, products, posts, courses, candidates,
+   orders). The exact entities depend on the project domain.
+   - Minimum complexity tier: **Medium (1.5×)**.
+   - Typical adjusted-day range: BE 3–4.5, FE 3–4.5, PM/QA
+     1–1.25.
+   - Expected cost range (1-portal): **RM 2,000 – RM 3,000**.
+
+These modules MUST appear as separate line items in the Module
+Breakdown table. They MUST NOT be merged into other modules or
+omitted even if the client's description does not mention them.
+
+In reverse estimation, mandatory modules MUST always be assigned
+**P1 priority** and included before any optional modules.
+
+### X. Portal-Based Pricing (NON-NEGOTIABLE)
+
+Systems vary in the number of distinct portals (separate frontend
+applications) they require. The portal count directly affects
+frontend effort and MUST be accounted for in every quotation.
+
+**Portal Configurations:**
+
+| Configuration | Description | FE Portal Multiplier |
+| :--- | :--- | :---: |
+| Single Portal | User-facing portal only (e.g., customer app, public site) | 1.0× |
+| Dual Portal | User portal + Backoffice (BO) / Admin portal | 1.5× |
+
+**Rules:**
+
+1. The estimator MUST determine the portal configuration at the
+   start of estimation based on the project description.
+2. The **FE Portal Multiplier** is applied to each module's
+   complexity-adjusted FE days **before** cost calculation:
+   $$
+   D_{FE}^{final} = D_{FE}^{adj} \times M_{portal}
+   $$
+3. BE days and PM/QA days are NOT affected by the portal
+   multiplier (the backend API is shared across portals).
+4. PM/QA days MUST be recalculated after applying the portal
+   multiplier to FE days:
+   $$
+   D_{PM}^{raw} = 0.15 \times (D_{BE}^{raw} + D_{FE}^{raw}
+   \times M_{portal})
+   $$
+5. The portal configuration MUST be stated in the Executive
+   Summary of every quotation.
+6. Modules that have NO frontend component (e.g., pure backend
+   services, cron jobs, data pipelines) are exempt from the
+   portal multiplier.
+7. If a module's UI exists in only ONE of the two portals (e.g.,
+   the admin panel has user management but the user portal does
+   not), the estimator MAY apply a reduced portal adjustment
+   (1.25× instead of 1.5×) with explicit justification.
 
 ## Cost Parameters & Formulas
 
@@ -163,8 +233,8 @@ addition to) a project description, the estimator MUST work
 **Per-Module Cost (before buffer):**
 
 $$
-C_m = \bigl(D_{BE} \times 300\bigr)
-    + \bigl(D_{FE} \times 250\bigr)
+C_m = \bigl(D_{BE} \times 360\bigr)
+    + \bigl(D_{FE}^{final} \times 300\bigr)
     + \bigl(D_{PM} \times 200\bigr)
 $$
 
@@ -174,10 +244,17 @@ $$
 D_{role}^{adj} = D_{role}^{raw} \times M_{complexity}
 $$
 
-and PM/QA raw days:
+and the FE final days include the portal multiplier:
 
 $$
-D_{PM}^{raw} = 0.15 \times (D_{BE}^{raw} + D_{FE}^{raw})
+D_{FE}^{final} = D_{FE}^{adj} \times M_{portal}
+$$
+
+and PM/QA raw days (portal-aware):
+
+$$
+D_{PM}^{raw} = 0.15 \times (D_{BE}^{raw} + D_{FE}^{raw}
+\times M_{portal})
 $$
 
 **Grand Total:**
@@ -199,12 +276,13 @@ $$
 
 **Step 2 — Weighted average daily rate:**
 
-For a module with $D_{BE}^{adj}$ BE days, $D_{FE}^{adj}$ FE days,
-and $D_{PM}^{adj}$ PM/QA days, the blended cost is:
+For a module with $D_{BE}^{adj}$ BE days, $D_{FE}^{final}$ FE days
+(after portal multiplier), and $D_{PM}^{adj}$ PM/QA days, the
+blended cost is:
 
 $$
-C_m = (D_{BE}^{adj} \times 300)
-    + (D_{FE}^{adj} \times 250)
+C_m = (D_{BE}^{adj} \times 360)
+    + (D_{FE}^{final} \times 300)
     + (D_{PM}^{adj} \times 200)
 $$
 
@@ -234,13 +312,20 @@ $$
 ### Forward Quotation Workflow
 
 1. **Receive** project description from client or internal team.
-2. **Decompose** into discrete modules (each with a clear scope).
-3. **Classify** each module's complexity tier per Principle III.
-4. **Estimate** BE and FE days independently; derive PM/QA days.
-5. **Apply** complexity multiplier and calculate per-module cost.
-6. **Sum** all modules; apply 20% contingency buffer.
-7. **Generate** the four-section output per Principle IV.
-8. **Review** internally for accuracy before delivery.
+2. **Determine portal configuration** — single portal (1.0×) or
+   dual portal (1.5×) per Principle X.
+3. **Decompose** into discrete modules (each with a clear scope).
+4. **Verify mandatory modules** — ensure User & Role Management
+   and CRUD Content Management are included per Principle IX.
+5. **Classify** each module's complexity tier per Principle III.
+6. **Estimate** BE and FE days independently; apply portal
+   multiplier to FE days; derive PM/QA days.
+7. **Apply** complexity multiplier and calculate per-module cost.
+8. **Validate** mandatory module costs fall within expected ranges
+   per Principle IX.
+9. **Sum** all modules; apply 20% contingency buffer.
+10. **Generate** the four-section output per Principle IV.
+11. **Review** internally for accuracy before delivery.
 
 ### Reverse Estimation Workflow
 
@@ -248,31 +333,39 @@ $$
    vague).
 2. **Back-calculate** development budget:
    $B_{dev} = B_{total} / 1.20$.
-3. **Generate** candidate modules based on the project domain.
-4. **Classify** each module's complexity per Principle III —
+3. **Determine portal configuration** — single portal (1.0×) or
+   dual portal (1.5×) per Principle X.
+4. **Generate** candidate modules based on the project domain.
+5. **Ensure mandatory modules** — User & Role Management and CRUD
+   Content Management MUST be included as P1 per Principle IX.
+6. **Classify** each module's complexity per Principle III —
    do NOT under-tier to fit budget.
-5. **Estimate** raw BE and FE days per module; derive PM/QA.
-6. **Apply** complexity multipliers; calculate per-module cost.
-7. **Rank** modules by business priority (core features first).
-8. **Accumulate** costs top-down; mark modules that exceed
-   $B_{dev}$ as **Deferred**.
-9. **Generate** output with Sections A–D per Principle IV,
-   plus **Section E — Missing Technical Clarifications**
-   (mandatory when input is vague).
-10. **Review** internally for accuracy before delivery.
+7. **Estimate** raw BE and FE days per module; apply portal
+   multiplier to FE days; derive PM/QA.
+8. **Apply** complexity multipliers; calculate per-module cost.
+9. **Validate** mandatory module costs fall within expected ranges.
+10. **Rank** modules by business priority (core features first,
+    mandatory modules always P1).
+11. **Accumulate** costs top-down; mark modules that exceed
+    $B_{dev}$ as **Deferred**. Mandatory modules MUST NOT be
+    deferred.
+12. **Generate** output with Sections A–D per Principle IV,
+    plus **Section E — Missing Technical Clarifications**
+    (mandatory when input is vague).
+13. **Review** internally for accuracy before delivery.
 
 ### Module Breakdown Table Format
 
 | Module Name | Complexity | BE Days | FE Days | PM/QA Days | Subtotal Cost |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| *e.g., User Auth* | Medium (1.5×) | 3 | 2.25 | 0.75 | RM 1,575 |
-| *e.g., Dashboard* | Simple (1.0×) | 1 | 2 | 0.5 | RM 900 |
+| *e.g., User Auth* | Medium (1.5×) | 4.5 | 3 | 1.25 | RM 2,770 |
+| *e.g., Dashboard* | Simple (1.0×) | 1 | 2 | 0.5 | RM 1,060 |
 
 For reverse estimates, append deferred modules at the bottom:
 
 | Module Name | Complexity | BE Days | FE Days | PM/QA Days | Subtotal Cost |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| ~~*Deferred Module*~~ | Medium (1.5×) | 2 | 1.5 | 0.5 | ~~RM 975~~ |
+| ~~*Deferred Module*~~ | Medium (1.5×) | 3 | 1.5 | 0.75 | ~~RM 1,380~~ |
 
 ### Reverse Quotation Output Format
 
@@ -321,4 +414,4 @@ When performing a reverse estimate, the output MUST include
   open/active quotes → approve → update constitution version →
   update dependent templates if affected.
 
-**Version**: 1.1.0 | **Ratified**: 2026-03-30 | **Last Amended**: 2026-04-08
+**Version**: 2.0.0 | **Ratified**: 2026-03-30 | **Last Amended**: 2026-04-09
