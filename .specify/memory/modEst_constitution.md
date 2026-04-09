@@ -1,13 +1,15 @@
 <!--
   Sync Impact Report
   ===================================================================
-  Version change: 1.1.0 → 2.0.0 (MAJOR — billing rates changed)
+  Version change: 2.0.0 → 2.1.0 (MINOR — new principle added)
   Modified principles:
-    - Principle I — Standardized Billing Rates: BE RM 300→360,
-      FE RM 250→300, PM/QA unchanged at RM 200
+    - Principle V — Transparency & Exclusions: removed
+      "client provides design mockups" assumption example;
+      added included-services note
+    - Principle VIII — Reverse Estimation: added Principle XI
+      to cross-reference list
   Added sections:
-    - Principle IX — Mandatory Base Modules
-    - Principle X — Portal-Based Pricing
+    - Principle XI — Service Scope: Requirements & UI/UX Design
   Removed sections: None
   Templates requiring updates:
     - .specify/templates/plan-template.md — ✅ no update needed
@@ -15,7 +17,7 @@
     - .specify/templates/spec-template.md — ✅ no update needed
     - .specify/templates/tasks-template.md — ✅ no update needed
     - .github/skills/module_est_by_price/SKILL.md — ✅ updated
-      (rates, mandatory modules, portal rules synced)
+      (service scope rules synced)
     - .github/skills/module_est_by_price/references/
       modEst_constitution.md — ✅ synced
   Follow-up TODOs: None
@@ -90,9 +92,15 @@ Every quote MUST explicitly state the following exclusions:
 - Paid third-party API subscription fees.
 - Ongoing maintenance and support beyond the quoted scope.
 
-Any additional assumption (e.g., "client provides design mockups")
-MUST be listed in the Executive Summary or as a separate
-Assumptions section.
+Any additional assumption (e.g., "client provides copy/content
+ text") MUST be listed in the Executive Summary or as a
+separate Assumptions section.
+
+Every quote MUST explicitly state the following **included
+services** (per Principle XI):
+
+- Requirements discussion and gathering with the client.
+- UI/UX design, wireframes, and mockups.
 
 ### VI. Rounding & Precision
 
@@ -151,8 +159,8 @@ addition to) a project description, the estimator MUST work
    (Principle III), output format (Principle IV with Section E
    appended), exclusions (Principle V), rounding (Principle VI),
    validity (Principle VII), mandatory base modules
-   (Principle IX), and portal-based pricing (Principle X) MUST
-   be followed identically.
+   (Principle IX), portal-based pricing (Principle X), and
+   service scope (Principle XI) MUST be followed identically.
 
 ### IX. Mandatory Base Modules (NON-NEGOTIABLE)
 
@@ -225,6 +233,43 @@ frontend effort and MUST be accounted for in every quotation.
    the admin panel has user management but the user portal does
    not), the estimator MAY apply a reduced portal adjustment
    (1.25× instead of 1.5×) with explicit justification.
+
+### XI. Service Scope — Requirements & UI/UX Design (NON-NEGOTIABLE)
+
+All quotations MUST assume the following service
+responsibilities are performed by the team (not the client):
+
+1. **Requirements Discussion** — The team MUST conduct
+   requirements gathering and clarification sessions with the
+   client. This effort is included in the PM/QA overhead
+   (Principle II) and MUST NOT be quoted as a separate line
+   item unless the engagement requires an unusually extensive
+   discovery phase (more than 5 working days of dedicated
+   requirements work).
+
+2. **UI/UX Design** — All UI/UX designs, wireframes, and
+   mockups are provided by the team. The client is NOT
+   expected to supply design assets. This effort is factored
+   into the FE day estimates for each module.
+
+**Rules:**
+
+1. Quotations MUST NOT list "client provides design mockups",
+   "client provides wireframes", or similar phrases as an
+   assumption or prerequisite.
+2. The Executive Summary MUST state that requirements
+   discussion and UI/UX design are included in the quoted
+   scope.
+3. If a project requires an exceptionally large design effort
+   (e.g., 20+ unique screens, complex design system, extensive
+   branding work), the estimator MAY add a dedicated
+   **"UI/UX Design"** module with a Simple (1.0×) or Medium
+   (1.5×) complexity tier to cover the additional effort beyond
+   what is embedded in per-module FE estimates.
+4. If the project requires an unusually extensive discovery
+   phase (more than 5 working days), the estimator MAY add a
+   dedicated **"Requirements & Discovery"** module with a
+   Simple (1.0×) complexity tier.
 
 ## Cost Parameters & Formulas
 
@@ -312,20 +357,23 @@ $$
 ### Forward Quotation Workflow
 
 1. **Receive** project description from client or internal team.
-2. **Determine portal configuration** — single portal (1.0×) or
+2. **Confirm service scope** — requirements discussion and UI/UX
+   design are included per Principle XI. Note in Executive
+   Summary.
+3. **Determine portal configuration** — single portal (1.0×) or
    dual portal (1.5×) per Principle X.
-3. **Decompose** into discrete modules (each with a clear scope).
-4. **Verify mandatory modules** — ensure User & Role Management
+4. **Decompose** into discrete modules (each with a clear scope).
+5. **Verify mandatory modules** — ensure User & Role Management
    and CRUD Content Management are included per Principle IX.
-5. **Classify** each module's complexity tier per Principle III.
-6. **Estimate** BE and FE days independently; apply portal
+6. **Classify** each module's complexity tier per Principle III.
+7. **Estimate** BE and FE days independently; apply portal
    multiplier to FE days; derive PM/QA days.
-7. **Apply** complexity multiplier and calculate per-module cost.
-8. **Validate** mandatory module costs fall within expected ranges
+8. **Apply** complexity multiplier and calculate per-module cost.
+9. **Validate** mandatory module costs fall within expected ranges
    per Principle IX.
-9. **Sum** all modules; apply 20% contingency buffer.
-10. **Generate** the four-section output per Principle IV.
-11. **Review** internally for accuracy before delivery.
+10. **Sum** all modules; apply 20% contingency buffer.
+11. **Generate** the four-section output per Principle IV.
+12. **Review** internally for accuracy before delivery.
 
 ### Reverse Estimation Workflow
 
@@ -333,26 +381,30 @@ $$
    vague).
 2. **Back-calculate** development budget:
    $B_{dev} = B_{total} / 1.20$.
-3. **Determine portal configuration** — single portal (1.0×) or
+3. **Confirm service scope** — requirements discussion and UI/UX
+   design are included per Principle XI. Note in Executive
+   Summary.
+4. **Determine portal configuration** — single portal (1.0×) or
    dual portal (1.5×) per Principle X.
-4. **Generate** candidate modules based on the project domain.
-5. **Ensure mandatory modules** — User & Role Management and CRUD
+5. **Generate** candidate modules based on the project domain.
+6. **Ensure mandatory modules** — User & Role Management and CRUD
    Content Management MUST be included as P1 per Principle IX.
-6. **Classify** each module's complexity per Principle III —
+7. **Classify** each module's complexity per Principle III —
    do NOT under-tier to fit budget.
-7. **Estimate** raw BE and FE days per module; apply portal
+8. **Estimate** raw BE and FE days per module; apply portal
    multiplier to FE days; derive PM/QA.
-8. **Apply** complexity multipliers; calculate per-module cost.
-9. **Validate** mandatory module costs fall within expected ranges.
-10. **Rank** modules by business priority (core features first,
+9. **Apply** complexity multipliers; calculate per-module cost.
+10. **Validate** mandatory module costs fall within expected
+    ranges.
+11. **Rank** modules by business priority (core features first,
     mandatory modules always P1).
-11. **Accumulate** costs top-down; mark modules that exceed
+12. **Accumulate** costs top-down; mark modules that exceed
     $B_{dev}$ as **Deferred**. Mandatory modules MUST NOT be
     deferred.
-12. **Generate** output with Sections A–D per Principle IV,
+13. **Generate** output with Sections A–D per Principle IV,
     plus **Section E — Missing Technical Clarifications**
     (mandatory when input is vague).
-13. **Review** internally for accuracy before delivery.
+14. **Review** internally for accuracy before delivery.
 
 ### Module Breakdown Table Format
 
@@ -414,4 +466,4 @@ When performing a reverse estimate, the output MUST include
   open/active quotes → approve → update constitution version →
   update dependent templates if affected.
 
-**Version**: 2.0.0 | **Ratified**: 2026-03-30 | **Last Amended**: 2026-04-09
+**Version**: 2.1.0 | **Ratified**: 2026-03-30 | **Last Amended**: 2026-04-09

@@ -22,6 +22,7 @@ argument-hint: "Paste project requirements to quote, OR provide a target budget 
 5. **Always include mandatory base modules.** Every quotation MUST include "User & Role Management" and "CRUD Content Management" as separate line items per Principle IX. These MUST NOT be omitted or merged into other modules.
 6. **Always determine portal configuration.** Before estimating, determine if the system needs 1 portal (user only) or 2 portals (user + backoffice). Apply the FE Portal Multiplier (1.0× for single, 1.5× for dual) to FE days per Principle X.
 7. **Validate mandatory module pricing.** User & Role Management (1-portal) MUST cost RM 2,500–3,000. CRUD Content Management (1-portal) MUST cost RM 2,000–3,000. If below these ranges, re-examine day estimates.
+8. **Requirements & UI/UX are team-provided.** Requirements discussion with the client and all UI/UX design are performed by the team — NOT the client. Quotations MUST NOT assume "client provides design mockups" or similar. The Executive Summary MUST state that requirements discussion and UI/UX design are included in the quoted scope (per Principle XI).
 
 ## Procedure — Input Validation (ALWAYS RUN FIRST)
 
@@ -91,6 +92,15 @@ Based on the project description, determine the portal configuration:
 
 State the portal configuration in the Executive Summary.
 
+### Step 2b — Confirm Service Scope
+
+Per Principle XI, confirm and state in the Executive Summary that:
+
+- **Requirements discussion** with the client is conducted by the team.
+- **UI/UX design** (wireframes, mockups) is provided by the team.
+
+Do NOT list "client provides design mockups" as an assumption.
+
 ### Step 3 — Decompose into Modules
 
 Read the user's project description and break it into discrete technical modules. Each module must have:
@@ -152,6 +162,7 @@ Produce the quotation in **exactly** this structure (do not omit or reorder sect
 - **Estimated Project Duration:** [Total adjusted days including 20% buffer] Days
 - **Total Estimated Price:** RM [Grand Total]
 - **Infrastructure Constraints:** *This quote does not include monthly cloud hosting (AWS/GCP/Azure), domain registration, paid third-party API subscriptions, or ongoing maintenance beyond the quoted scope.*
+- **Included Services:** *Requirements discussion and gathering with the client, and all UI/UX design (wireframes, mockups) are included in the quoted scope.*
 
 #### B. Module Breakdown
 
@@ -181,6 +192,7 @@ Before delivering, verify:
 - [ ] 20% buffer applied to grand total.
 - [ ] All four sections (A–D) present and in order.
 - [ ] Portal configuration stated in Executive Summary.
+- [ ] Service scope stated in Executive Summary (requirements & UI/UX included).
 - [ ] Mandatory modules (User & Role Management, CRUD Content) present.
 - [ ] Mandatory module costs within expected ranges.
 - [ ] Day values in 0.25-day increments; costs in whole RM.
@@ -238,6 +250,15 @@ Based on the project description, determine the portal configuration:
 
 - **Single Portal (1.0×):** Only one user-facing frontend.
 - **Dual Portal (1.5×):** User-facing portal + backoffice/admin portal.
+
+### Step R3b — Confirm Service Scope
+
+Per Principle XI, confirm and state in the Executive Summary that:
+
+- **Requirements discussion** with the client is conducted by the team.
+- **UI/UX design** (wireframes, mockups) is provided by the team.
+
+Do NOT list "client provides design mockups" as an assumption.
 
 ### Step R4 — Generate Candidate Modules
 
@@ -300,6 +321,7 @@ Produce the quotation in **exactly** this structure (all five sections, do not o
 - **Estimated Project Duration:** [Total adjusted days of included modules] Days
 - **Total Estimated Price:** RM [Sum of included modules × 1.20]
 - **Infrastructure Constraints:** *This quote does not include monthly cloud hosting (AWS/GCP/Azure), domain registration, paid third-party API subscriptions, or ongoing maintenance beyond the quoted scope.*
+- **Included Services:** *Requirements discussion and gathering with the client, and all UI/UX design (wireframes, mockups) are included in the quoted scope.*
 
 #### B. Module Breakdown
 
@@ -335,6 +357,7 @@ Before delivering, verify:
 - [ ] Complexity multiplier applied correctly per tier — no under-tiering.
 - [ ] Portal multiplier applied to FE days (1.0× single / 1.5× dual).
 - [ ] Portal configuration stated in Executive Summary.
+- [ ] Service scope stated in Executive Summary (requirements & UI/UX included).
 - [ ] Mandatory modules (User & Role Management, CRUD Content) present and not deferred.
 - [ ] Mandatory module costs within expected ranges.
 - [ ] B_dev = Target Budget / 1.20.
